@@ -1,0 +1,227 @@
+#pragma warning(disable : 4996)
+#include <stdio.h>
+#include <string.h>
+#define MAX_STR 255
+#define MAX_STU 255
+
+int is_int(char a);
+int char_to_int(char a);
+
+typedef struct struct_date {
+	int year, month, day;
+} Sdate;
+
+typedef struct  struct_person {
+	char name[MAX_STR];
+	char telephone[MAX_STR];
+	Sdate birthday;
+} Sperson;
+
+Sperson inp_str() {
+	Sperson s;
+	char name_t[MAX_STR], phone_t[MAX_STR], birthday_t[MAX_STR];
+	int wrongnum = 1, wrongbirth = 1, year, month, day, temp, temp_t;
+	printf("Enter the name : ");
+	scanf(" %[^\n]s", name_t);
+	while (1) {
+		printf("Enter the phone number : ");
+		scanf(" %[^\n]s", phone_t);
+		for (int i = 0; phone_t[i]; i++) {
+			if ((int)is_int(phone_t[i]) == 1) {
+				continue;
+			}
+			temp_t = i + 1;
+		}
+		if (temp_t >= 9 && temp_t <= 11) {
+			break;
+		}
+	}
+	while (1) {
+		printf("Enter the birthday (yyyymmdd) : ");
+		scanf(" %[^\n]s", birthday_t);
+		for (int i = 0; birthday_t[i]; i++) {
+			temp = i + 1;
+		}
+		if (temp == 8) {
+			year = (is_int(birthday_t[0]) + is_int(birthday_t[1]) + is_int(birthday_t[2]) + is_int(birthday_t[3]) == 0) ? ((char_to_int(birthday_t[0])) * 1000 + (char_to_int(birthday_t[1])) * 100 + (char_to_int(birthday_t[2])) * 10 + (char_to_int(birthday_t[3]))) : -1;
+			month = (is_int(birthday_t[4]) + is_int(birthday_t[5]) == 0) ? ((char_to_int(birthday_t[4])) * 10 + (char_to_int(birthday_t[5]))) : -1;
+			day = (is_int(birthday_t[6]) + is_int(birthday_t[7]) == 0) ? ((char_to_int(birthday_t[6])) * 10 + (char_to_int(birthday_t[7]))) : -1;
+			if (year >= 0) {
+				if (month >= 1 && month <= 12) {
+					if (day >= 1 && day <= 31) {
+						break;
+					}
+				}
+			}
+		}
+		else {
+			continue;
+		}
+	}
+	for (int i = 0; name_t[i]; i++) {
+		s.name[i] = name_t[i];
+		s.name[i + 1] = 0;
+	}
+
+	for (int i = 0; phone_t[i]; i++) {
+		s.telephone[i] = phone_t[i];
+		s.telephone[i + 1] = 0;
+	}
+	s.birthday.year = year;
+	s.birthday.month = month;
+	s.birthday.day = day;
+
+	return s;
+}
+
+int is_int(char a) { // char 내용이 int 인지 확인
+	if (a >= '0' && a <= '9') {
+		return 0;
+	}
+	else {
+		return 1;
+	}
+}
+
+int char_to_int(char a) {
+	if (is_int(a) == 0) {
+		return a - 48;
+	}
+}
+
+void phone_call(char* phonenum) {
+	int temp;
+	for (int i = 0; phonenum[i]; i++) {
+		temp = i + 1;
+	}
+	if (phonenum[0] == '0' && phonenum[1] == '2') {
+		if (temp == 10) {
+			for (int i = 0; phonenum[i]; i++) {
+				printf("%c", phonenum[i]);
+				if (i == 1 || i == 5) {
+					printf("-");
+				}
+			}
+		}
+		if (temp == 9) {
+			for (int i = 0; phonenum[i]; i++) {
+				printf("%c", phonenum[i]);
+				if (i == 1 || i == 4) {
+					printf("-");
+				}
+			}
+		}
+	}
+	else {
+		if (temp == 11) {
+			for (int i = 0; phonenum[i]; i++) {
+				printf("%c", phonenum[i]);
+				if (i == 2 || i == 6) {
+					printf("-");
+				}
+			}
+		}
+		if (temp == 10) {
+			for (int i = 0; phonenum[i]; i++) {
+				printf("%c", phonenum[i]);
+				if (i == 2 || i == 5) {
+					printf("-");
+				}
+			}
+		}
+	}
+}
+
+void printList(int count, Sperson s[]) {
+	for (int i = 0; i < count; i++) {
+		printf("[%d]\nName : %s\n", i + 1, s[i].name);
+		printf("Telephone : ");
+		phone_call(s[i].telephone);
+		printf("\nBirthday : %d. %d. %d.\n", s[i].birthday.year,s[i].birthday.month,s[i].birthday.day);
+	}
+}
+
+void searchList(int count, Sperson s[]) {
+	char str[MAX_STR];
+	scanf(" %[^\n]s", str);
+	for (int i = 0; i < count; i++) {
+		if (strcmp(str, s[i].name) == 0) {
+			printf("\nName : %s\n",s[i].name);
+			printf("Telephone : ");
+			phone_call(s[i].telephone);
+			printf("\nBirthday : %d. %d. %d.\n\n", s[i].birthday.year, s[i].birthday.month, s[i].birthday.day);
+		}
+	}
+}
+
+void searchBirth(int count, Sperson s[]) {
+	char str[MAX_STR];
+	int month, temp = 0;
+	scanf(" %[^\n]s", str);
+	printf("\n\nHappy Birthday!!\n\n");
+	month = atoi(str);
+	for (int i = 0; i < count; i++) {
+		if (s[i].birthday.month == month) {
+			printf("[%d]\nName : %s\n",temp + 1, s[i].name);
+			printf("Telephone : ");
+			phone_call(s[i].telephone);
+			printf("\nBirthday : %d. %d. %d.\n\n", s[i].birthday.year, s[i].birthday.month, s[i].birthday.day);
+			temp++;
+		}
+	}
+}
+
+void clear_stdin() {
+	char ch;
+	while ((ch = getchar()) != EOF && ch != '\n') {};
+}
+
+void printMenu(int *count, Sperson s[]) {
+	int command, temp;
+	char str[MAX_STR];
+	while (1) {
+		printf("Enter : ");
+		fgets(str, MAX_STR, stdin);
+		command = atoi(str);
+		switch (command) {
+		case 1:
+			printf("\n** Enter a person **\n");
+			s[*count] = inp_str();
+			*count += 1;
+			clear_stdin();
+			break;
+		case 2:
+			printf("\n** Phone book **\n");
+			printList(*count, s);
+			printf("\n");
+			break;
+		case 3:
+			printf("\nEnter the name to search: ");
+			searchList(*count, s);
+			clear_stdin();
+			break;
+		case 4:
+			printf("\nEnter the month: ");
+			searchBirth(*count, s);
+			clear_stdin();
+			break;
+		case 0:
+			exit(1);
+			break;
+		default:
+			printf("\nEnter again: ");
+			continue;
+		printf("Press any key to return...");
+		getch();
+		printMenu(count,s);
+		}
+	}
+}
+
+int main() {
+	Sperson s[MAX_STU]; 
+	int count = 0;
+
+	printf("1. Add a person\n2. Print the list\n3. Name search\n4. Birthday this month!\n9. Quit the program\n");
+	printMenu(&count, s);
+}
