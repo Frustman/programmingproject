@@ -1,0 +1,146 @@
+#pragma warning(disable : 4996)
+#include <stdio.h>
+#include <string.h>
+#define MAX_STR 255
+
+int is_int(char a);
+int char_to_int(char a);
+
+typedef struct struct_date {
+	int year, month, day;
+} Sdate;
+
+typedef struct  struct_person {
+	char name[MAX_STR];
+	char telephone[MAX_STR];
+	Sdate birthday;
+} Sperson;
+
+Sperson inp_str() {
+	Sperson s;
+	char name_t[MAX_STR], phone_t[MAX_STR], birthday_t[MAX_STR];
+	int wrongnum = 1, wrongbirth = 1, year, month, day, temp, temp_t;
+	printf("Enter the name : ");
+	scanf(" %[^\n]s", name_t);
+	while (1) {
+		printf("Enter the phone number : ");
+		scanf(" %[^\n]s", phone_t);
+		for (int i = 0; phone_t[i]; i++) {
+			if ((int)is_int(phone_t[i]) == 1) {
+				continue;
+			}
+			temp_t = i + 1;
+		}
+		if (temp_t >= 9 && temp_t <= 11) {
+			break;
+		}
+	}
+	while (1) {
+		printf("Enter the birthday (yyyymmdd) : ");
+		scanf(" %[^\n]s", birthday_t);
+		for (int i = 0; birthday_t[i]; i++) {
+			temp = i + 1;
+		}
+		if (temp == 8) {
+			year = (is_int(birthday_t[0]) + is_int(birthday_t[1]) + is_int(birthday_t[2]) + is_int(birthday_t[3]) == 0) ? ((char_to_int(birthday_t[0])) * 1000 + (char_to_int(birthday_t[1])) * 100 + (char_to_int(birthday_t[2])) * 10 + (char_to_int(birthday_t[3]))) : -1;
+			month = (is_int(birthday_t[4]) + is_int(birthday_t[5]) == 0) ? ((char_to_int(birthday_t[4])) * 10 + (char_to_int(birthday_t[5]))) : -1;
+			day = (is_int(birthday_t[6]) + is_int(birthday_t[7]) == 0) ? ((char_to_int(birthday_t[6])) * 10 + (char_to_int(birthday_t[7]))) : -1;
+			if (year >= 0) {
+				if (month >= 1 && month <= 12) {
+					if (day >= 1 && day <= 31) {
+						break;
+					}
+				}
+			}
+		}
+		else {
+			continue;
+		}
+	}
+	for (int i = 0; name_t[i]; i++) {
+		s.name[i] = name_t[i];
+		s.name[i + 1] = 0;
+	}
+	
+	for (int i = 0; phone_t[i]; i++) {
+		s.telephone[i] = phone_t[i];
+		s.telephone[i + 1] = 0;
+	}
+	s.birthday.year = year;
+	s.birthday.month = month;
+	s.birthday.day = day;
+
+	return s;
+}
+
+int is_int(char a) { // char 내용이 int 인지 확인
+	if (a >= '0' && a <= '9') {
+		return 0;
+	}
+	else {
+		return 1;
+	}
+}
+
+int char_to_int(char a) {
+	if (is_int(a) == 0) {
+		return a - 48;
+	}
+}
+
+void phone_call(char* phonenum) {
+	int temp;
+	for (int i = 0; phonenum[i]; i++) {
+		temp = i + 1;
+	}
+	if (phonenum[0] == '0' && phonenum[1] == '2') {
+		if (temp == 10) {
+			for (int i = 0; phonenum[i]; i++) {
+				printf("%c", phonenum[i]);
+				if (i == 1 || i == 5) {
+					printf("-");
+				}
+			}
+		}
+		if (temp == 9) {
+			for (int i = 0; phonenum[i]; i++) {
+				printf("%c", phonenum[i]);
+				if (i == 1 || i == 4) {
+					printf("-");
+				}
+			}
+		}
+	}
+	else {
+		if (temp == 11) {
+			for (int i = 0; phonenum[i]; i++) {
+				printf("%c", phonenum[i]);
+				if (i == 2 || i == 6) {
+					printf("-");
+				}
+			}
+		}
+		if (temp == 10) {
+			for (int i = 0; phonenum[i]; i++) {
+				printf("%c", phonenum[i]);
+				if (i == 2 || i == 5) {
+					printf("-");
+				}
+			}
+		}
+	}
+}
+
+
+int main() {
+	Sperson s[10];
+	s[0] = inp_str();
+	printf("\n");
+	printf("이름 : %s\n", s[0].name);
+	printf("폰 번호 : ");
+	phone_call(s[0].telephone);
+	printf("\n생일 년도 : %d\n", s[0].birthday.year);
+	printf("생일 월 : %d\n", s[0].birthday.month);
+	printf("생일 일 : %d\n", s[0].birthday.day);
+    
+}
