@@ -1,0 +1,121 @@
+#include <stdio.h>
+
+int types[255]; // 0 = Alphabet, 1 = NUMBER, 2 = OPERATOR, 3 = OTHER
+char words[255][255];
+
+int classtype(char *str) {
+	int type = 0 , temp = 0;
+	if (str != NULL) {
+		if (str[0] >= 'A' && str[0] <= 'Z') {
+			type = 0;
+		}
+		else if (str[0] >= 'a' && str[0] <= 'z') {
+			type = 0;
+		}
+		else if (str[0] >= '0' && str[0] <= '9') {
+			type = 1;
+		}
+		else if (str[0] == '*' || str[0] == '^' || str[0] == '/') {
+			type = 2;
+		}
+		else if (str[0] == '+' || str[0] == '-') {
+			type = 4;
+		}
+		else if (str[0] == '.')
+		{
+			if (temp == 0) {
+				type = 1;
+			}
+			else {
+				type = 3;
+			}
+			temp++;
+		}
+		else {
+			type = 3;
+		}
+		for (int i = 1; str[i]; i++) {
+			if (str[i] >= 'A' && str[i] <= 'Z') {
+				type = (type != 0) ? 3 : 0;
+			}
+			else if (str[i] >= 'a' && str[i] <= 'z') {
+				type = (type != 0) ? 3 : 0;
+			}
+			else if (str[i] >= '0' && str[i] <= '9') {
+				if (type == 4) {
+					type = 1;
+				}
+				else {
+					type = (type != 1) ? 3 : 1;
+				}
+			}
+			else if (str[i] == '*' || str[i] == '-' || str[i] == '^' || str[i] == '/' || str[i] == '+') {
+				if (type == 4) {
+					type = 2;
+				}
+				else {
+					type = (type != 2) ? 3 : 2;
+				}
+			}
+			else if (str[i] == '.')
+			{
+				if (temp == 0) {
+					type = (type != 1) ? 3 : 1;
+				}
+				else {
+					type = 3;
+				}
+				temp++;
+			}
+			else {
+				type = 3;
+			}
+		}
+	}
+	return type;
+}
+void parse() {
+	char buff[100]; 
+	char delimiter[] = " \t\n";
+	int type = 0, temp = 1, std = 1;
+	while (fgets(buff, 100, stdin)) {
+		char* ps = 0;
+		ps = strtok(buff, delimiter);
+		types[temp] = classtype(ps);
+		for (int i = 0; (ps != NULL) ? i < ps[i] : 0; i++) {
+			words[temp][i] = ps[i];
+		}
+		temp++;
+		while (ps) {
+			ps = strtok(NULL, delimiter);
+			types[temp] = classtype(ps);
+			for (int i = 0; (ps != NULL) ? ps[i] : 0; i++) {
+				words[temp][i] = ps[i];
+			}
+			temp++;
+		}
+		temp--;
+		fflush(stdin);
+	}
+		for (int i = 1; i < temp; i++) {
+			printf("[%d] ", i);
+			printf("%s", words[i]);
+			if (types[i] == 0) {
+				printf(" (Alphabets)\n");
+			}
+			if (types[i] == 1) {
+				printf(" (Numbers)\n");
+			}
+			if (types[i] == 2) {
+				printf(" (Operators)\n");
+			}
+			if (types[i] == 3) {
+				printf(" (Others)\n");
+			}
+		}
+	
+}
+
+void main() {
+	parse();
+}
