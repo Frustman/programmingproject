@@ -1,0 +1,98 @@
+#include <stdio.h>
+#define N 7
+void spiralArray(int a[N][N], int n) {
+	if (n % 2 == 0) {
+		int temp = 1;
+		for (int i = 0; i < n; i++) { // 오른쪽 n
+			a[0][i] = temp;
+			temp++;
+		}
+		for (int i = 1; i < n - 1; i++) { // 아래 n
+			a[i][n - 1] = temp;
+			temp++;
+		}
+		for (int i = n - 1; i >= 0; i--) { // 왼쪽 n
+			a[n - 1][i] = temp;
+			temp++;
+		} // 여기까지 기본 베이스
+	for (int k = 1; k < n / 2; k++) { // 반복 구간
+		temp--;
+		for (int i = 0; i < n - 2 * k + 1; i++) { // 위 n - k
+			a[n - k - i][k - 1] = temp;
+			temp++;
+		}
+		temp--;
+		for (int i = 0; i < n - 2 * k + 1; i++) { //  오른쪽 n - k
+			a[k][k + i - 1] = temp;
+			temp++;
+		}
+		temp--;
+		for (int i = 0; i < n - 2 * k; i++) { // 아래 n - k - 1
+			a[i + k][n - k - 1] = temp;
+			temp++;
+		}
+		temp--;
+		for (int i = 0; i < n - 2 * k; i++) { // 왼쪽 n - k - 1
+			a[n - 1 - k][n - k - 1 - i] = temp;
+			temp++;
+		}
+	}
+	}
+	if (n % 2 == 1) {
+		int temp = 1;
+		for (int i = 0; i < n; i++) { // 오른쪽 n
+			a[0][i] = temp;
+			temp++;
+		}
+		for (int i = 1; i < n - 1; i++) { // 아래 n
+			a[i][n - 1] = temp;
+			temp++;
+		}
+		for (int i = n - 1; i >= 0; i--) { // 왼쪽 n
+			a[n - 1][i] = temp;
+			temp++;
+		} // 여기까지 기본 베이스
+
+	for (int k = 1; k < n / 2; k++) { // 반복 구간
+		temp--;
+		for (int i = 0; i < n - 2 * k + 1; i++) { // 위 n - k
+			a[n - k - i][k - 1] = temp;
+			temp++;
+		}
+		temp--;
+		for (int i = 0; i < n - 2 * k + 1; i++) { //  오른쪽 n - k
+			a[k][k + i - 1] = temp;
+			temp++;
+		}
+		temp--;
+		for (int i = 0; i < n - 2 * k; i++) { // 아래 n - k - 1
+			a[i + k][n - k - 1] = temp;
+			temp++;
+		}
+		temp--;
+		for (int i = 0; i < n - 2 * k; i++) { // 왼쪽 n - k - 1
+			a[n - 1 - k][n - k - 1 - i] = temp;
+			temp++;
+		}
+	}
+	for (int i = 0; i < 2; i++) { //  마무 리 
+		a[(n-1)/2][(n-1)/2 + i - 1] = temp;
+		temp++;
+	}
+	}
+}
+void printArray(int a[N][N], int n) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			printf("%2d ", a[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+int main() {
+	int a[N][N] = { 0, };
+
+	spiralArray(a, N);
+	printArray(a, N);
+}
