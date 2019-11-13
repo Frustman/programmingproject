@@ -1,0 +1,67 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <Windows.h>
+
+
+void *replaceText(char *text, char *target, char *replace, int maxStr) {
+	char* fin = strstr(text, target);
+	char buff[99] = "";
+	char* point = text;
+	int lenre, lenta, lente;
+	for (int i = 0; replace[i]; i++) {
+		lenre = i + 1;
+	}
+	for (int i = 0; text[i]; i++) {
+		lente = i + 1;
+	}
+	for (int i = 0; target[i]; i++) {
+		lenta = i + 1;
+	}
+	int i = 0;
+	while (fin != NULL) {
+		int d = fin - text;
+		char temp[99] = "";
+		for (i = 0; i < fin - text; i++) {
+			temp[i] = text[i];
+		}
+		int temp2 = i;
+		for (int k = 0; k < lenre ; k++,i++) {
+			temp[i] = replace[k];
+		}
+		strcat(buff, temp);
+		text += d + lenta;
+
+		fin = strstr(text, target);
+	}
+	strcpy(point, buff);
+}
+void scroll(char *str, int n) {
+	int temp = 0;
+	for (int i = 0; str[i]; ++i) {
+		temp = i + 1;
+	}
+	for (int j = 0; j < n; j++) {
+		for (int i = 0; i< temp; i++) {
+			for (int k = i; k < temp + i; k++) {
+				printf("%c", str[(temp + k) % (temp)]);
+			}
+			system("cls");
+			Sleep(100);
+		}
+	}
+}
+int main() {
+
+	char text[99], target[99], replace[99];
+
+	printf("Enter a text : ");
+	scanf_s(" %[^\n]s", text, 99);
+	printf("Enter a word to find : ");
+	scanf_s(" %[^\n]s", target, 99);
+	printf("Enter a new word : ");
+	scanf_s(" %[^\n]s", replace, 99);
+	replaceText(text, target, replace, 15);
+
+	scroll(text, 2); 
+}
