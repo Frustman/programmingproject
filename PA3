@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <time.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+char a[255];
+int k, x = 0, y = 0;
+
+void encoding(char a[]) {
+	for (int i = 0; a[i]; i++) {
+		if (isalpha(a[i]) == 2) { // a[i]가 소문자일경우
+			a[i] = (a[i] - 97 + k) % 26 + 97;
+		}
+		else if (isalpha(a[i]) == 1) { // a[i]가 대문자일경우
+			a[i] = (a[i] - 65 + k) % 26 + 65;
+		}
+	}
+}
+void decoding(char a[]) {
+	printf("암호문 : ");
+	for (int i = 0; a[i]; i++) {
+		printf("%c", a[i]);
+	}
+	printf("\n");
+}
+
+void swap_char(char a[], int x, int y) {
+	int temp;
+	temp = a[y];
+	a[y] = a[x];
+	a[x] = temp;
+	printf("x : %d, y : %d\n", x, y);
+	decoding(a);
+}
+
+void give_rand(char a[], int* x, int* y) {
+	int len = 0;
+	for (int i = 0; a[i]; i++) {
+		len = i;
+	}
+	while (*x == *y) {
+		*x = rand() % len;
+		*y = rand() % len;
+	}
+}
+
+int main() {
+	srand(time(NULL));
+	scanf_s("%d", &k);
+	printf("k는 %d\n", k);
+	scanf_s(" %[^\n]s", a, sizeof(a));
+	printf("원문 : %s\n", a);
+	encoding(a);
+	give_rand(a, &x, &y);
+	swap_char(a,x,y); // 한 번 교환
+	swap_char(a,x,y); // 다시 돌리기
+	decoding(a);
+}
