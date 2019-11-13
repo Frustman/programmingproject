@@ -1,0 +1,63 @@
+#include <windows.h>
+#include <stdio.h>
+
+void print_by_center(char arr[], int strlen, int y, int columns, int rows, WORD color);
+void input_ch(int arr[], int y, int columns, int rows);
+void prt_checkboard(int arr[], int y, int columns, int rows, int size);
+
+void print_by_center(char arr[], int strlen, int y, int columns, int rows, WORD color) {
+	COORD coord = { columns / 2 - strlen / 2 , y};
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+	printf("%s", arr);
+}
+
+void prt_ui(int arr[],int columns, int rows) {
+	print_by_center("### Tic-Tae-Toe ###", sizeof("### Tic-Tae-Toe ###") / sizeof(char), 2, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+	print_by_center("Player 1 : Human, Player 2 : Computer", sizeof("Player 1 : Human, Player 2 : Computer") / sizeof(char), 4, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+	prt_checkboard(arr, 6, columns, rows, 9);
+
+	input_ch(arr, 23, columns, rows);
+}
+
+void prt_checkboard(int arr[], int y, int columns, int rows, int size) {
+	for (int i = 0; i < size; i++) {
+		int x = 15 - 10 * (i % 3);
+		if (i % 3 == 2) x--;
+		print_by_center("     ", x, y + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		print_by_center("     ", x, y + 1 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		if (arr[i] == 2) print_by_center("     ", x, y + 2 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		if (arr[i] == 1) print_by_center("  X  ", x, y + 2 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		if (arr[i] == 0) print_by_center("  O  ", x, y + 2 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		print_by_center("     ", x, y + 3 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		print_by_center("     ", x, y + 4 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+	}
+}
+
+void input_ch(int arr[], int y, int columns, int rows) {
+	int a;
+	print_by_center("Enter again :   ", sizeof("Enter again :   ") / sizeof(char), y, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	while (1) {
+		scanf_s("%d", &a);
+		if (a <= 9 && a > 0 && arr[a - 1] == 2) {
+			arr[a - 1] = 0;
+		}
+		system("cls");
+		prt_ui(arr, columns, rows);
+	}
+
+}
+
+int main(){
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	int columns, rows;
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+	columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+	rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+	int arr[9] = { 2, 2, 2, 2, 2, 2, 2, 2, 2};
+
+
+	prt_ui(arr, columns, rows);
+}
