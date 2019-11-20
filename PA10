@@ -1,0 +1,246 @@
+#include <windows.h>
+#include <stdio.h>
+#include <time.h>
+
+void print_by_center(char arr[], int strlen, int y, int columns, int rows, WORD color);
+void input_ch(int arr[], int y, int columns, int rows, int who_first);
+void prt_checkboard(int arr[], int y, int columns, int rows, int size);
+
+void print_by_center(char arr[], int strlen, int y, int columns, int rows, WORD color) {
+	COORD coord = { columns / 2 - strlen / 2 , y };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+	printf("%s", arr);
+}
+
+void prt_ui(int arr[], int columns, int rows, int who_first) {
+	system("cls");
+	
+	print_by_center("### Tic-Tae-Toe ###", sizeof("### Tic-Tae-Toe ###") / sizeof(char), 2, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+	print_by_center("Player 1 : Human, Player 2 : Computer", sizeof("Player 1 : Human, Player 2 : Computer") / sizeof(char), 4, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+	prt_checkboard(arr, 6, columns, rows, 9);
+
+	input_ch(arr, 23, columns, rows, who_first);
+}
+
+void prt_win(int arr[], int columns, int rows, int win, int who_first) {
+	print_by_center("### Tic-Tae-Toe ###", sizeof("### Tic-Tae-Toe ###") / sizeof(char), 2, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+	print_by_center("Player 1 : Human, Player 2 : Computer", sizeof("Player 1 : Human, Player 2 : Computer") / sizeof(char), 4, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+	prt_checkboard(arr, 6, columns, rows, 9);
+	if(win == 1){
+		print_by_center("Player 1 win!", sizeof("Player 1 win!") / sizeof(char), 23, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	}
+	else if(win == 0) {
+		print_by_center("Player 2 win!", sizeof("Player 2 win!") / sizeof(char), 23, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	}
+	else {
+	print_by_center("Draw!", sizeof("Draw!") / sizeof(char), 23, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	}
+	print_by_center("Try again? [Y/N] : ", sizeof("Try again? [Y/N] : ") / sizeof(char), 25, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	char c = '0';
+	fgetc(stdin);
+	scanf_s("%c", &c);
+	if (c == 'N') {
+		exit(1);
+	}
+	else if (c == 'Y') {
+		for (int i = 0; i < 9; i++) {
+			arr[i] = 0;
+		}
+		system("cls");
+		prt_ui(arr, columns, rows, who_first);
+	}
+}
+
+
+
+void prt_start(int arr[], int columns, int rows) {
+	print_by_center("### Tic-Tae-Toe ###", sizeof("### Tic-Tae-Toe ###") / sizeof(char), 5, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+	print_by_center("1 : Player first (X) ", sizeof("1 : Player first (X)") / sizeof(char), 6, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	print_by_center("2 : Player second (O)", sizeof("2 : Player second (O)") / sizeof(char), 7, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	print_by_center("3 : EXIT             ", sizeof("3 : EXIT             ") / sizeof(char), 8, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	print_by_center("Enter command : ", sizeof("Enter command : ") / sizeof(char), 9, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	int d = 0;
+	scanf_s("%d", &d);
+
+	if (d == 1 || d == 2) {
+		prt_ui(arr, columns, rows, d);
+	}
+	else if (d == 3) {
+		exit(1);
+	}
+	else {
+		system("cls");
+		prt_start(arr, columns, rows);
+	}
+}
+
+void prt_checkboard(int arr[], int y, int columns, int rows, int size) {
+	for (int i = 0; i < size; i++) {
+		int x = 15 - 10 * (i % 3);
+		if (i % 3 == 2) x--;
+		print_by_center("     ", x, y + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		print_by_center("     ", x, y + 1 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		if (arr[i] == 0) print_by_center("     ", x, y + 2 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		if (arr[i] == 2) print_by_center("  X  ", x, y + 2 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		if (arr[i] == 1) print_by_center("  O  ", x, y + 2 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		print_by_center("     ", x, y + 3 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+		print_by_center("     ", x, y + 4 + 5 * (i / 3), columns, rows, (i % 2 == 0) ? BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE : BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+	}
+}
+
+void dumb_ai(int arr[], int who_first) {
+	int temp = 0, k = 0;
+	if (arr[4] == 0) {
+		arr[4] = 2;
+	}
+	else {
+		int arr2[9];
+		for (int i = 0; i < 9; i++) {
+			arr2[i] = arr[i] + 1;
+		}
+		int should = 0;
+		for (int i = 0; i < 3; i++) {
+			if (arr2[i * 3] * arr2[i * 3 + 1] * arr2[i * 3 + 2] == 4) {
+				should = 100 * i + 10 * (i + 1) + i + 2;
+			}
+			if (arr2[i] * arr2[i + 3] * arr2[i + 6] == 4) {
+				should = 100 * i + 10 * (i + 3) + i + 6;
+			}
+			if (arr2[i] * arr2[4] * arr2[8 - i] == 4) {
+				should = 100 * i + 40 + 8 - i;
+			}
+		}
+		if (should != 0) {
+			if (arr[should / 100] == 0)
+				arr[should / 100] = 2;
+			if (arr[(should % 100) / 10] == 0)
+				arr[(should % 100) / 10] = 2;
+			if (arr[should % 10] == 0)
+				arr[should % 10] = 2;
+		}
+		else if (arr[1] == 0 || arr[3] == 0 || arr[5] == 0 || arr[7] == 0) {
+			k = rand() % 4;
+			temp = 0;
+			while (temp == 0) {
+				if (arr[2 * k + 1] == 0) {
+					arr[2 * k + 1] = 2;
+					temp++;
+				}
+				k = rand() % 4;
+			}
+		}
+		else if (arr[0] == 0 || arr[2] == 0 || arr[6] == 0 || arr[8] == 0) {
+			k = rand() % 4;
+			temp = 0;
+			while (temp == 0) {
+				if (arr[2 * k] == 0) {
+					arr[2 * k] = 2;
+					temp++;
+				}
+				k = rand() % 4;
+			}
+		}
+	}
+}
+
+void input_ch(int arr[], int y, int columns, int rows, int who_first) {
+	int a;
+	print_by_center("Enter again :   ", sizeof("Enter again :   ") / sizeof(char), y, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	int fin = 0, mistake = 0;
+	while (fin == 0) {
+		if (who_first == 2 && mistake == 0) {
+			dumb_ai(arr, who_first);
+			system("cls");
+			print_by_center("### Tic-Tae-Toe ###", sizeof("### Tic-Tae-Toe ###") / sizeof(char), 2, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+			print_by_center("Player 1 : Human, Player 2 : Computer", sizeof("Player 1 : Human, Player 2 : Computer") / sizeof(char), 4, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+			prt_checkboard(arr, 6, columns, rows, 9);
+
+			print_by_center("Enter again :   ", sizeof("Enter again :   ") / sizeof(char), y, columns, rows, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		}
+		if (arr[0] != 0 && arr[1] != 0 && arr[2] != 0 && arr[3] != 0 && arr[4] != 0 && arr[5] != 0 && arr[6] != 0 && arr[7] != 0 && arr[8] != 0 || who_win(arr) != 2) {
+			system("cls");
+			prt_win(arr, columns, rows, who_win(arr), who_first);
+			fin = 1;
+		}
+		else if (arr[0] != 0 && arr[1] != 0 && arr[2] != 0 && arr[3] != 0 && arr[4] != 0 && arr[5] != 0 && arr[6] != 0 && arr[7] != 0 && arr[8] != 0 && who_win(arr) == 2) {
+			system("cls");
+			prt_win(arr, columns, rows, who_win(arr), who_first);
+			fin = 1;
+		}
+		scanf_s("%d", &a);
+		if (a <= 9 && a > 0 && arr[a - 1] == 0) {
+			if (arr[0] != 0 && arr[1] != 0 && arr[2] != 0 && arr[3] != 0 && arr[4] != 0 && arr[5] != 0 && arr[6] != 0 && arr[7] != 0 && arr[8] != 0 || who_win(arr) != 2) {
+				system("cls");
+				prt_win(arr, columns, rows, who_win(arr), who_first);
+				fin = 1;
+			}
+			else if (arr[0] != 0 && arr[1] != 0 && arr[2] != 0 && arr[3] != 0 && arr[4] != 0 && arr[5] != 0 && arr[6] != 0 && arr[7] != 0 && arr[8] != 0 && who_win(arr) == 2) {
+				system("cls");
+				prt_win(arr, columns, rows, who_win(arr), who_first);
+				fin = 1;
+			}
+			else {
+				arr[a - 1] = 1;
+				if (who_first == 1) {
+					dumb_ai(arr, who_first);
+				}
+				system("cls");
+				prt_ui(arr, columns, rows, who_first);
+			}
+			mistake = 0;
+		}
+		else {
+			system("cls");
+			prt_ui(arr, columns, rows, who_first);
+			mistake = 1;
+		}
+
+	}
+}
+
+
+int who_win(int arr[]) {
+	for (int i = 0; i < 3; i++) {
+		if (arr[i * 3] * arr[i * 3 + 1] * arr[i * 3 + 2] == 1) {
+			return 1; // player win
+		}
+		else if (arr[i * 3] * arr[i * 3 + 1] * arr[i * 3 + 2] == 8) {
+			return 0; // cp win
+		}
+
+		if (arr[i] * arr[i + 3] * arr[i + 6] == 1) {
+			return 1; // player win
+		}
+		else if (arr[i] * arr[i + 3] * arr[i + 6] == 8) {
+			return 0; // cp win
+		}
+
+		if (arr[i] * arr[4] * arr[8 - i] == 1) {
+			return 1; // player win
+		}
+		else if (arr[i] * arr[4] * arr[8 - i] == 8) {
+			return 0; // cp win
+		}
+	}
+	return 2;
+}
+
+int main() {
+	srand((unsigned int)time(NULL));
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	int columns, rows;
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+	columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+	rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+	int arr[9] = { 0, };
+
+	prt_start(arr, columns, rows);
+}
