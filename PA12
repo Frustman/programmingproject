@@ -1,0 +1,143 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <Windows.h>
+#define MAX_STR 255
+
+
+typedef struct struct_word {
+	char word[MAX_STR];
+	char meaning[MAX_STR];
+} Sword;
+
+void input_pt(FILE *fp, Sword* dict, int count);
+void prt_ui(FILE *fp, Sword* dict, int count);
+
+void file_input(FILE *fp, Sword* dict) {
+	char delimiter[] = " \t";
+	char *token, *temp;
+	int count = 0;
+	char buff[255];
+	fseek(fp, 0L, SEEK_SET);
+	while (fgets(buff, 100, fp) > 0) {
+		token = strtok(buff, delimiter);
+		strcpy(dict[count].word, token);
+		temp = &token[strlen(token) + 1];
+		while (temp[0] == ' ' || temp[0] == '\t') {
+			temp++;
+		}
+		strcpy(dict[count].meaning, temp);
+		count++;
+	}
+}
+
+int strcmp_ignore_case(char* a, char* b) {
+	int i = 0;
+	char cmp1, cmp2;
+	while (a[i] != 0) {
+		if (a[i] >= 'A' && a[i] <= 'Z') {
+			cmp1 = a[i] + abs('A' - 'a');
+		}
+		else cmp1 = a[i];
+		if (b[i] >= 'A' && b[i] <= 'Z') {
+			cmp2 = b[i] + abs('A' - 'a');
+		}
+		else cmp2 = b[i];
+		if (cmp1 == cmp2) {
+			i++;
+		}
+		else {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
+void input_pt(FILE *fp, Sword* dict, int count) {
+	int input_d, loc = 0;
+	do {
+		scanf("%d", &input_d);
+		if (input_d < 1 || input_d > 3) {
+			printf("\n잘못 입력하셨습니다. 다시 입력해주세요.");
+		}
+	} while (input_d < 1 || input_d > 3);
+	if (input_d == 1) {
+		char buff[255];
+		printf("\n찾고자 하시는 단어를 입력해주세요. ");
+		while (getchar() != '\n');
+		scanf("%s", buff);
+		int found = 0;
+		for (int i = 0; i < count; i++) {
+			if (strcmp_ignore_case(buff, dict[i].word) == 0) {
+				printf("\n\n 단어 : %s, 의미 : %s", dict[i].word, dict[i].meaning);
+				printf("\n다른 단어를 찾고 계십니까? [Y/N] : ");
+				while (getchar() != '\n');
+				char yorn;
+				scanf("%c", &yorn);
+				if (yorn == 'N') {
+					found = 2;
+					break;
+				}
+				found = 1;
+			}
+		}
+		if (found == 0) {
+			printf("그런 단어를 확인할 수 없습니다.");
+		}
+		if (found == 1) {
+			printf("더 이상 단어를 확인할 수 없습니다.");
+		}
+	}
+	if (input_d == 2) {
+		char select = 'a';
+		while (select != 'f') {
+			for (int i = loc; i < loc + 15; i++) {
+				printf("단어 : %s, 의미 : %s", dict[i].word, dict[i].meaning);
+			}
+			printf("\n\n 다음 페이지 : n, 이전 페이지 : p, 메뉴로 나가기 : f\nEnter : ");
+			while (getchar() != '\n');
+			scanf("%c", &select);
+			if (select == 'n') {
+				if (loc + 15 < count) loc += 15;
+				else printf("다음 페이지가 없습니다."), Sleep(100);
+			}
+			if (select == 'p') {
+				if (loc - 15 > 0) loc -= 15;
+				else printf("이전 페이지가 없습니다."), Sleep(100);
+			}
+		}
+		prt_ui(fp, dict, count);
+	}
+	if (input_d == 3) {
+		exit(1);
+	}
+}
+
+void prt_ui(FILE *fp, Sword* dict, int count) {
+	printf(" ### Dictionary ###\n");
+	printf("1. Search a Word\n");
+	printf("2. List words\n");
+	printf("3. Exit\n");
+	input_pt(fp, dict, count);
+}
+
+
+int main() {
+	FILE *fp;
+	fp = fopen("voca13000.txt", "r");
+	if (fp == NULL) {
+		printf("파일 열기 오류\n");
+		exit(-1);
+	}
+
+	char buff[255];
+	int cnt = 0;
+	while (fgets(buff, 100, fp) > 0) cnt++;
+
+	Sword* dict;
+	dict = (Sword*)malloc(cnt * sizeof(Sword));
+
+	file_input(fp, dict);
+	prt_ui(fp, dict, cnt);
+}
