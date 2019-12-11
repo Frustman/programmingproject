@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+
+int same(int k) {
+	if (k / 100 == k % 10 || k % 10 == (k / 10) % 10 || k / 100 == (k / 10) % 10) return 0;
+	else return 1;
+}
+
+int main() {
+	srand((unsigned)time(NULL));
+	int k = rand() % 900 + 100;
+	while (same(k) == 0) {
+		k = rand() % 900 + 100;
+	}
+	int input, strike = 0, ball = 0, chance = 10;
+	while (chance >= 0) {
+		strike = 0, ball = 0;
+		printf("%d 번 시도 가능합니다.\n", chance);
+		printf("Enter Number : ");
+		scanf_s("%d", &input);
+		while (input <= 99 && input >= 1000 || same(input) == 0) {
+			printf("Enter again : ");
+			while (getc(stdin) == '\n');
+			scanf_s("%d", &input);
+		}
+		strike += (input / 100 == k / 100) ? 1 : 0;
+		strike += ((input / 10) % 10 == (k / 10) % 10) ? 1 : 0;
+		strike += (input % 10 == k % 10) ? 1 : 0;
+		ball += (input / 100 == (k / 10) % 10) ? 1 : 0;
+		ball += (input / 100 == k % 10) ? 1 : 0;
+		ball += ((input / 10) % 10 == k / 100) ? 1 : 0;
+		ball += ((input / 10) % 10 == k % 10) ? 1 : 0;
+		ball += (input % 10 == k / 100) ? 1 : 0;
+		ball += (input % 10 == (k / 10) % 10) ? 1 : 0;
+		if (strike == 3) printf("\n%d - Strike Out!", input), exit(1);
+		else {
+			printf("\n%d - %dS %dB\n", input, strike, ball), chance--;
+		}
+	}
+}
